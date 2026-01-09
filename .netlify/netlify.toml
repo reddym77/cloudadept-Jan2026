@@ -1,0 +1,50 @@
+plugins = []
+headers = []
+
+[dev]
+command = "vite"
+port = 3000.0
+publish = "dist"
+
+[functions]
+
+[functions."*"]
+
+[build]
+publish = "C:\\Users\\pavanesh\\Downloads\\cloudadept_system\\dist"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "npm install && npm run build"
+force = "true"
+base = "C:\\Users\\pavanesh\\Downloads\\cloudadept_system"
+ignore = "false"
+
+[build.environment]
+NODE_VERSION = "18"
+CI = "true"
+NETLIFY_BUILD_SKIP = "false"
+
+[build.processing]
+skip_processing = false
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]
