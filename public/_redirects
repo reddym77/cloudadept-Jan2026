@@ -1,3 +1,20 @@
-/index.html /index.html 200
-/* /index.html 200
+# Static Assets
+/robots.txt /robots.txt 200
+/sitemap.xml /sitemap.xml 200
+/assets/* /assets/:splat 200
 
+# App Routes (Explicitly listed to avoid "Infinite loop detected" error)
+/ /index.html 200
+/about /index.html 200
+/contact /index.html 200
+/services /index.html 200
+/services/itsm /index.html 200
+/services/itom /index.html 200
+/services/csm /index.html 200
+/services/custom-app-development /index.html 200
+/services/integration /index.html 200
+/services/grc /index.html 200
+/services/now-assist /index.html 200
+
+# Fallback for Service sub-pages
+/services/* /index.html 200
