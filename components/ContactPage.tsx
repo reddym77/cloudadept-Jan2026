@@ -19,12 +19,35 @@ const ContactInfoItem: React.FC<{ icon: React.ReactElement; title: string; child
 const ContactPage: React.FC = () => {
     const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setStatus("submitting");
-        setTimeout(() => {
-            setStatus("submitted");
-        }, 1500);
+
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch(`https://formsubmit.co/ajax/${COMPANY_INFO.email}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                setStatus("submitted");
+            } else {
+                console.error("Form submission failed");
+                setStatus("idle");
+                alert("Failed to send message. Please try again later.");
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            setStatus("idle");
+            alert("An error occurred. Please try again later.");
+        }
     };
 
     return (
@@ -110,6 +133,12 @@ const ContactPage: React.FC = () => {
                                         className="space-y-6"
                                     >
                                         <h3 className="text-2xl font-bold text-slate-900 mb-4">Send us a Message</h3>
+
+                                        {/* FormSubmit Configuration */}
+                                        <input type="hidden" name="_subject" value="New Contact Form Submission - CloudAdept" />
+                                        <input type="hidden" name="_template" value="table" />
+                                        <input type="hidden" name="_captcha" value="false" />
+
                                         <div>
                                             <label htmlFor="contact-name" className="block text-sm font-medium text-slate-700">Full Name</label>
                                             <input type="text" name="name" id="contact-name" required className="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-md shadow-sm focus:ring-brand-blue focus:border-brand-blue" />

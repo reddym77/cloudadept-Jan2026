@@ -79,12 +79,35 @@ const ServiceHighlightCard: React.FC<{ icon: React.ReactElement; title: string; 
 const HomePage: React.FC = () => {
     const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
 
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setStatus("submitting");
-        setTimeout(() => {
-            setStatus("submitted");
-        }, 1500);
+
+        const formData = new FormData(e.currentTarget);
+        const data = Object.fromEntries(formData.entries());
+
+        try {
+            const response = await fetch(`https://formsubmit.co/ajax/${COMPANY_INFO.email}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (response.ok) {
+                setStatus("submitted");
+            } else {
+                console.error("Form submission failed");
+                setStatus("idle");
+                alert("Failed to send message. Please try again later.");
+            }
+        } catch (error) {
+            console.error("Error submitting form:", error);
+            setStatus("idle");
+            alert("An error occurred. Please try again later.");
+        }
     };
 
     return (
@@ -223,6 +246,11 @@ const HomePage: React.FC = () => {
                                         onSubmit={handleFormSubmit}
                                         className="space-y-6"
                                     >
+                                        {/* FormSubmit Configuration */}
+                                        <input type="hidden" name="_subject" value="New Home Page Inquiry - CloudAdept" />
+                                        <input type="hidden" name="_template" value="table" />
+                                        <input type="hidden" name="_captcha" value="false" />
+
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                             <div>
                                                 <label htmlFor="home-name" className="block text-sm font-medium text-slate-700">Full Name</label>
