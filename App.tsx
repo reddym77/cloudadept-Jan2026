@@ -13,6 +13,8 @@ import CustomAppDevPage from './components/services/CustomAppDevPage';
 import IntegrationPage from './components/services/IntegrationPage';
 import GrcPage from './components/services/GrcPage';
 import NowAssistPage from './components/services/NowAssistPage';
+import { SpeedInsights } from "@vercel/speed-insights/react"
+import { Analytics } from "@vercel/analytics/react"
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -23,6 +25,8 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-white transition-colors duration-300">
+      <SpeedInsights />
+      <Analytics />
       <Navbar />
       <main className="flex-grow pt-20">
         <Routes>
