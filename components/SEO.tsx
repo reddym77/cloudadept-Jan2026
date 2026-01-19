@@ -14,7 +14,7 @@ const SEO: React.FC<SEOProps> = ({
     description,
     keywords = "ServiceNow, ServiceNow Partner, ITSM, ITOM, CSM, ServiceNow Implementation, Now Platform, CloudAdept Systems",
     url = "https://www.cloudadeptsystems.com",
-    image = "https://d33wubrfki0l68.cloudfront.net/691895f41efc7a4910cdf841/screenshot_2025-11-15-15-02-29-0000.webp"
+    image = "https://www.cloudadeptsystems.com/C&A-19.png"
 }) => {
     return (
         <Helmet>

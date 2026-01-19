@@ -10,10 +10,9 @@ const CustomNavLink: React.FC<{ to: string; children: React.ReactNode; onClick?:
     to={to}
     onClick={onClick}
     className={({ isActive }) =>
-      `px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 transform hover:-translate-y-0.5 ${
-        isActive
-          ? 'text-brand-blue'
-          : 'text-gray-600 hover:text-brand-blue'
+      `px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 transform hover:-translate-y-0.5 ${isActive
+        ? 'text-brand-blue'
+        : 'text-gray-600 hover:text-brand-blue'
       }`
     }
   >
@@ -36,11 +35,10 @@ const Navbar: React.FC = () => {
   }, []);
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/95 shadow-md backdrop-blur-sm' 
-        : 'bg-white'
-    }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
+      ? 'bg-white/95 shadow-md backdrop-blur-sm'
+      : 'bg-white'
+      }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <div className="flex-shrink-0">
@@ -52,16 +50,15 @@ const Navbar: React.FC = () => {
             <div className="ml-10 flex items-center space-x-4">
               <CustomNavLink to="/">Home</CustomNavLink>
               <CustomNavLink to="/about">About Us</CustomNavLink>
-              
+
               {/* Services Dropdown */}
               <div className="relative" onMouseEnter={() => setServicesMenuOpen(true)} onMouseLeave={() => setServicesMenuOpen(false)}>
                 <NavLink
                   to="/services"
                   className={({ isActive }) =>
-                    `px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300 flex items-center ${
-                      isActive
-                        ? 'text-brand-blue'
-                        : 'text-gray-600 hover:text-brand-blue'
+                    `px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300 flex items-center ${isActive
+                      ? 'text-brand-blue'
+                      : 'text-gray-600 hover:text-brand-blue'
                     }`
                   }
                   aria-haspopup="true"
@@ -99,13 +96,13 @@ const Navbar: React.FC = () => {
           </div>
           <div className="hidden md:block">
             <Link
-                to="/contact"
-                className="bg-brand-blue text-white px-4 py-2 rounded-lg font-medium hover:bg-opacity-90 transition-colors duration-300 shadow-sm"
+              to="/contact"
+              className="bg-brand-blue text-white px-4 py-2 rounded-lg font-medium hover:bg-opacity-90 transition-colors duration-300 shadow-sm"
             >
-                Get a Quote
+              Get a Quote
             </Link>
           </div>
-          
+
           {/* Mobile Menu Button */}
           <div className="-mr-2 flex md:hidden items-center gap-2">
             <button
@@ -129,19 +126,19 @@ const Navbar: React.FC = () => {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-white border-b border-slate-200" id="mobile-menu">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <CustomNavLink to="/" onClick={() => setIsOpen(false)}>Home</CustomNavLink>
-            <CustomNavLink to="/about" onClick={() => setIsOpen(false)}>About Us</CustomNavLink>
-            
+          <div className="px-4 pt-2 pb-3 space-y-1 sm:px-3">
+            <CustomNavLink to="/" onClick={() => setIsOpen(false)}><span className="block">Home</span></CustomNavLink>
+            <CustomNavLink to="/about" onClick={() => setIsOpen(false)}><span className="block">About Us</span></CustomNavLink>
+
             {/* Mobile Services Accordion */}
             <div>
-              <NavLink 
+              <NavLink
                 to="/services"
                 onClick={(e) => {
-                    e.preventDefault();
-                    setMobileServicesMenuOpen(prev => !prev);
+                  e.preventDefault();
+                  setMobileServicesMenuOpen(prev => !prev);
                 }}
-                className={({isActive}) => `w-full flex justify-between items-center text-left px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300 ${isActive ? 'text-brand-blue bg-blue-50' : 'text-gray-600 hover:text-brand-blue hover:bg-gray-50'}`}
+                className={({ isActive }) => `w-full flex justify-between items-center text-left px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300 ${isActive ? 'text-brand-blue bg-blue-50' : 'text-gray-600 hover:text-brand-blue hover:bg-gray-50'}`}
                 aria-expanded={isMobileServicesMenuOpen}
               >
                 <span>Services</span>
@@ -163,17 +160,17 @@ const Navbar: React.FC = () => {
               )}
             </div>
 
-            <CustomNavLink to="/contact" onClick={() => setIsOpen(false)}>Contact</CustomNavLink>
+            <CustomNavLink to="/contact" onClick={() => setIsOpen(false)}><span className="block">Contact</span></CustomNavLink>
           </div>
-           <div className="px-5 pb-4">
-                <Link
-                    to="/contact"
-                    onClick={() => setIsOpen(false)}
-                    className="w-full text-center block bg-brand-blue text-white px-4 py-2 rounded-lg font-medium hover:bg-opacity-90 transition-colors duration-300"
-                >
-                    Get a Quote
-                </Link>
-           </div>
+          <div className="px-5 pb-4">
+            <Link
+              to="/contact"
+              onClick={() => setIsOpen(false)}
+              className="w-full text-center block bg-brand-blue text-white px-4 py-2 rounded-lg font-medium hover:bg-opacity-90 transition-colors duration-300"
+            >
+              Get a Quote
+            </Link>
+          </div>
         </div>
       )}
     </nav>

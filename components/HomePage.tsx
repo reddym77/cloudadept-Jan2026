@@ -1,10 +1,23 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Route, ShieldCheck, GaugeCircle, ClipboardList, ShieldAlert, Sparkles, MapPin, Mail, Phone, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Route, ShieldCheck, GaugeCircle, ClipboardList, ShieldAlert, Sparkles, MapPin, Mail, Phone, CheckCircle2, ArrowRight, Loader2, Send } from 'lucide-react';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import emailjs from '@emailjs/browser';
+import { toast } from "sonner";
 import { COMPANY_INFO } from "../src/constants";
 import SEO from './SEO';
 
+// Form Validation Schema
+const contactSchema = z.object({
+    name: z.string().min(2, "Name is required"),
+    email: z.string().email("Invalid email address"),
+    message: z.string().min(10, "Message is too short"),
+});
+
+type ContactFormData = z.infer<typeof contactSchema>;
 
 const AnimatedTitle = () => (
     <motion.h1
@@ -77,36 +90,62 @@ const ServiceHighlightCard: React.FC<{ icon: React.ReactElement; title: string; 
 );
 
 const HomePage: React.FC = () => {
-    const [status, setStatus] = useState<"idle" | "submitting" | "submitted">("idle");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        setStatus("submitting");
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors }
+    } = useForm<ContactFormData>({
+        resolver: zodResolver(contactSchema)
+    });
 
-        const formData = new FormData(e.currentTarget);
-        const data = Object.fromEntries(formData.entries());
+    const onSubmit = async (data: ContactFormData) => {
+        setIsSubmitting(true);
+
+        // Trim variables to prevent errors from accidental whitespace in .env
+        const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID?.trim();
+        const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID?.trim();
+        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY?.trim();
+
+        if (!serviceId || !templateId || !publicKey || serviceId === "YOUR_SERVICE_ID") {
+            toast.error("Email service is not configured.");
+            setIsSubmitting(false);
+            return;
+        }
 
         try {
-            const response = await fetch(`https://formsubmit.co/ajax/${COMPANY_INFO.email}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify(data)
-            });
+            // Enhanced payload to ensure correct "Reply-To" behavior
+            await emailjs.send(
+                serviceId,
+                templateId,
+                {
+                    // Standard variables
+                    from_name: data.name,
+                    from_email: data.email,
+                    reply_to: data.email,      // CRITICAL: This allows you to reply to the user
+                    to_name: "CloudAdept Admin",
 
-            if (response.ok) {
-                setStatus("submitted");
-            } else {
-                console.error("Form submission failed");
-                setStatus("idle");
-                alert("Failed to send message. Please try again later.");
-            }
+                    // Legacy variables (keeping these to ensure your current template still works)
+                    name: data.name,
+                    email: data.email,
+                    message: data.message,
+                    title: "Home Page Inquiry",
+                    time: new Date().toLocaleString('en-IN'),
+                },
+                publicKey
+            );
+
+            setIsSubmitted(true);
+            toast.success("Message sent successfully!");
+            reset();
         } catch (error) {
             console.error("Error submitting form:", error);
-            setStatus("idle");
-            alert("An error occurred. Please try again later.");
+            toast.error("Failed to send message. Please try again later.");
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -118,7 +157,7 @@ const HomePage: React.FC = () => {
                 url="https://www.cloudadeptsystems.com/"
             />
             {/* Hero Section */}
-            <section className="bg-slate-50 py-24 md:py-32">
+            <section className="bg-slate-50 pt-24 pb-10 md:pt-32 md:pb-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
                         <AnimatedTitle />
@@ -129,7 +168,7 @@ const HomePage: React.FC = () => {
             </section>
 
             {/* Services Overview Section */}
-            <section className="py-20 bg-slate-50">
+            <section className="py-12 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl md:text-4xl font-bold text-slate-900">Our Core ServiceNow Services</h2>
@@ -224,9 +263,9 @@ const HomePage: React.FC = () => {
                     </div>
 
                     <div className="grid md:grid-cols-5 gap-16 items-start">
-                        <div className="md:col-span-3 bg-white p-8 rounded-xl shadow-lg">
-                            <AnimatePresence>
-                                {status === "submitted" ? (
+                        <div className="md:col-span-3 bg-white p-8 rounded-xl shadow-lg border border-slate-100">
+                            <AnimatePresence mode="wait">
+                                {isSubmitted ? (
                                     <motion.div
                                         key="submitted"
                                         initial={{ opacity: 0, scale: 0.8 }}
@@ -234,40 +273,78 @@ const HomePage: React.FC = () => {
                                         exit={{ opacity: 0, scale: 0.8 }}
                                         className="text-center py-12"
                                     >
-                                        <CheckCircle2 className="mx-auto h-16 w-16 text-green-500" strokeWidth={1.5} />
-                                        <h3 className="mt-4 text-2xl font-semibold text-slate-900">Thank You!</h3>
+                                        <div className="mx-auto h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                                            <CheckCircle2 className="h-8 w-8 text-green-600" strokeWidth={2} />
+                                        </div>
+                                        <h3 className="text-2xl font-bold text-slate-900">Thank You!</h3>
                                         <p className="mt-2 text-slate-600">Your message has been sent. We'll get back to you shortly.</p>
+                                        <button
+                                            onClick={() => setIsSubmitted(false)}
+                                            className="mt-6 text-sm font-medium text-brand-blue hover:text-navy-800"
+                                        >
+                                            Send another message
+                                        </button>
                                     </motion.div>
                                 ) : (
                                     <motion.form
                                         key="form"
                                         initial={{ opacity: 0 }}
                                         animate={{ opacity: 1 }}
-                                        onSubmit={handleFormSubmit}
+                                        onSubmit={handleSubmit(onSubmit)}
                                         className="space-y-6"
                                     >
-                                        {/* FormSubmit Configuration */}
-                                        <input type="hidden" name="_subject" value="New Home Page Inquiry - CloudAdept" />
-                                        <input type="hidden" name="_template" value="table" />
-                                        <input type="hidden" name="_captcha" value="false" />
-
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                             <div>
-                                                <label htmlFor="home-name" className="block text-sm font-medium text-slate-700">Full Name</label>
-                                                <input type="text" name="name" id="home-name" required className="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-md shadow-sm focus:ring-brand-blue focus:border-brand-blue" />
+                                                <label htmlFor="home-name" className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
+                                                <input
+                                                    {...register("name")}
+                                                    type="text"
+                                                    id="home-name"
+                                                    className={`block w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors ${errors.name ? 'border-red-500 bg-red-50' : 'border-slate-300'}`}
+                                                    placeholder="John Doe"
+                                                />
+                                                {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name.message}</p>}
                                             </div>
                                             <div>
-                                                <label htmlFor="home-email" className="block text-sm font-medium text-slate-700">Email Address</label>
-                                                <input type="email" name="email" id="home-email" required className="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-md shadow-sm focus:ring-brand-blue focus:border-brand-blue" />
+                                                <label htmlFor="home-email" className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                                                <input
+                                                    {...register("email")}
+                                                    type="email"
+                                                    id="home-email"
+                                                    className={`block w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors ${errors.email ? 'border-red-500 bg-red-50' : 'border-slate-300'}`}
+                                                    placeholder="john@example.com"
+                                                />
+                                                {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
                                             </div>
                                         </div>
                                         <div>
-                                            <label htmlFor="home-message" className="block text-sm font-medium text-slate-700">Message</label>
-                                            <textarea id="home-message" name="message" rows={4} required placeholder="How can we help you?" className="mt-1 block w-full px-4 py-3 border border-slate-300 rounded-md shadow-sm focus:ring-brand-blue focus:border-brand-blue"></textarea>
+                                            <label htmlFor="home-message" className="block text-sm font-medium text-slate-700 mb-1">Message</label>
+                                            <textarea
+                                                {...register("message")}
+                                                id="home-message"
+                                                rows={4}
+                                                className={`block w-full px-4 py-3 border rounded-lg shadow-sm focus:ring-2 focus:ring-brand-blue focus:border-brand-blue transition-colors ${errors.message ? 'border-red-500 bg-red-50' : 'border-slate-300'}`}
+                                                placeholder="How can we help you?"
+                                            ></textarea>
+                                            {errors.message && <p className="mt-1 text-xs text-red-600">{errors.message.message}</p>}
                                         </div>
                                         <div>
-                                            <button type="submit" disabled={status === "submitting"} className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-brand-blue hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue disabled:bg-slate-400 transition-all transform hover:scale-105">
-                                                {status === "submitting" ? "Sending..." : "Send Message"}
+                                            <button
+                                                type="submit"
+                                                disabled={isSubmitting}
+                                                className="w-full flex items-center justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-brand-blue hover:bg-navy-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-blue disabled:bg-slate-400 disabled:cursor-not-allowed transition-all transform hover:scale-[1.02]"
+                                            >
+                                                {isSubmitting ? (
+                                                    <>
+                                                        <Loader2 className="animate-spin -ml-1 mr-2 h-5 w-5" />
+                                                        Sending...
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        Send Message
+                                                        <Send className="ml-2 h-5 w-5" />
+                                                    </>
+                                                )}
                                             </button>
                                         </div>
                                     </motion.form>

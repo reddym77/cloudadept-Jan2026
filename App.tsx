@@ -15,6 +15,7 @@ import GrcPage from './components/services/GrcPage';
 import NowAssistPage from './components/services/NowAssistPage';
 import { SpeedInsights } from "@vercel/speed-insights/react"
 import { Analytics } from "@vercel/analytics/react"
+import { Toaster } from 'sonner';
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -27,6 +28,7 @@ const App: React.FC = () => {
     <div className="min-h-screen flex flex-col font-sans bg-white transition-colors duration-300">
       <SpeedInsights />
       <Analytics />
+      <Toaster richColors position="top-right" />
       <Navbar />
       <main className="flex-grow pt-20">
         <Routes>
