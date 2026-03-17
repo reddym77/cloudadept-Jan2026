@@ -10,7 +10,7 @@ export const COMPANY_INFO = {
   locations: [
     {
       title: "United Kingdom",
-      lines: ["Staines-Upon-Thames, United Kingdom"]
+      lines: ["Staines-Upon-Thames"]
     },
     {
       title: "India",
