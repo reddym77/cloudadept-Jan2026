@@ -354,24 +354,42 @@ const HomePage: React.FC = () => {
 
                         <div className="md:col-span-2 space-y-8 pt-4">
                             <div className="flex items-start">
-                                <MapPin className="h-8 w-8 text-brand-blue mt-1" />
-                                <div className="ml-4">
-                                    <h3 className="text-lg font-semibold text-slate-900">Our Office</h3>
-                                    {COMPANY_INFO.addressLines.map((line, i) => <p key={i} className="mt-1 text-slate-600">{line}</p>)}
+                                <MapPin className="h-6 w-6 text-brand-blue mt-1 flex-shrink-0" />
+                                <div className="ml-4 space-y-4">
+                                    <h3 className="text-lg font-semibold text-slate-900">Our Offices</h3>
+                                    <div className="space-y-4">
+                                        {COMPANY_INFO.locations.map((location, index) => (
+                                            <div key={index} className="border-l-2 border-brand-blue/20 pl-4">
+                                                <h4 className="text-sm font-semibold text-slate-800">{location.title}</h4>
+                                                {location.lines.map((line, i) => <p key={i} className="mt-0.5 text-sm text-slate-600">{line}</p>)}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
+
                             <div className="flex items-start">
-                                <Mail className="h-8 w-8 text-brand-blue mt-1" />
+                                <Phone className="h-6 w-6 text-brand-blue mt-1 flex-shrink-0" />
+                                <div className="ml-4 space-y-3">
+                                    <h3 className="text-lg font-semibold text-slate-900">Call Us</h3>
+                                    <div className="space-y-3">
+                                        {COMPANY_INFO.phones.map((phone, index) => (
+                                            <div key={index} className="border-l-2 border-brand-blue/20 pl-4">
+                                                <h4 className="text-sm font-medium text-slate-800">{phone.label}</h4>
+                                                <p className="mt-0.5 text-sm text-slate-600"><a href={`tel:${phone.number}`} className="hover:text-brand-blue transition">{phone.number}</a></p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex items-start">
+                                <Mail className="h-6 w-6 text-brand-blue mt-1 flex-shrink-0" />
                                 <div className="ml-4">
                                     <h3 className="text-lg font-semibold text-slate-900">Email Us</h3>
-                                    <p className="mt-1 text-slate-600">{COMPANY_INFO.email}</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start">
-                                <Phone className="h-8 w-8 text-brand-blue mt-1" />
-                                <div className="ml-4">
-                                    <h3 className="text-lg font-semibold text-slate-900">Call Us</h3>
-                                    <p className="mt-1 text-slate-600">{COMPANY_INFO.phone}</p>
+                                    <p className="mt-1 text-sm text-slate-600 break-all">
+                                        <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-brand-blue transition">{COMPANY_INFO.email}</a>
+                                    </p>
                                 </div>
                             </div>
                         </div>

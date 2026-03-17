@@ -42,16 +42,24 @@ const Footer: React.FC = () => {
             <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
               <div>
                 <h3 className="text-sm font-semibold text-gray-900 tracking-wider uppercase">Contact Us</h3>
-                <ul className="mt-4 space-y-4 text-base text-gray-600">
-                  <li>
-                    {COMPANY_INFO.addressLines.map((line, index) => (
-                      <React.Fragment key={index}>
-                        {line}<br />
-                      </React.Fragment>
+                <ul className="mt-4 space-y-3 text-sm text-gray-600">
+                  {COMPANY_INFO.locations.map((loc, idx) => (
+                    <li key={`loc-${idx}`} className="leading-snug">
+                      <strong className="text-gray-900 block mb-1">{loc.title}</strong>
+                      <span>{loc.lines.join(", ")}</span>
+                    </li>
+                  ))}
+                  <li className="pt-3 mt-3 border-t border-gray-200 leading-snug space-y-2">
+                    {COMPANY_INFO.phones.map((phone, idx) => (
+                        <div key={`phone-${idx}`}>
+                          <strong className="text-gray-900">{phone.label}: </strong> {phone.number}
+                        </div>
                     ))}
                   </li>
-                  <li>{COMPANY_INFO.phone}</li>
-                  <li>{COMPANY_INFO.email}</li>
+                  <li className="pt-1 leading-snug">
+                    <strong className="text-gray-900">Email: </strong>
+                    <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-brand-blue transition">{COMPANY_INFO.email}</a>
+                  </li>
                 </ul>
               </div>
             </div>

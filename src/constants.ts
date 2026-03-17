@@ -2,11 +2,23 @@ export const COMPANY_INFO = {
   name: "CloudAdept Systems",
   tagline: "Mastering the ServiceNow Platform",
   email: "admin@cloudadeptsystems.com",
-  phone: "(+91) 703-256-5006",
-  address: "128, Kota, Nellore, Andhra Pradesh, India - 524413",
-  addressLines: [
-    "128, Kota, Nellore",
-    "Andhra Pradesh, India - 524413"
+  phone: "(+44) 7708 372 376",
+  phones: [
+    { label: "United Kingdom", number: "(+44) 7708 372 376" },
+    { label: "India", number: "(+91) 703-256-5006" }
+  ],
+  locations: [
+    {
+      title: "United Kingdom",
+      lines: ["Staines-Upon-Thames, United Kingdom"]
+    },
+    {
+      title: "India",
+      lines: [
+        "128, Kota, Nellore",
+        "Andhra Pradesh, India - 524413"
+      ]
+    }
   ],
   // Using a static map image placeholder for now
   //mapUrl: "https://img-wrapper.vercel.app/image?url=https://img-wrapper.vercel.app/image?url=https://placehold.co/800x600/e2e8f0/64748b?text=Kota,+Nellore" 

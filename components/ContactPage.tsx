@@ -128,14 +128,32 @@ const ContactPage: React.FC = () => {
                         >
                             <h2 className="text-3xl font-bold text-slate-900 mb-8">Contact Information</h2>
                             <div className="space-y-8">
-                                <ContactInfoItem icon={<Building size={24} />} title="Our Office">
-                                    {COMPANY_INFO.addressLines.map((line, i) => <p key={i}>{line}</p>)}
+                                <ContactInfoItem icon={<Building size={24} />} title="Our Offices">
+                                    <div className="space-y-4 mt-3">
+                                        {COMPANY_INFO.locations.map((loc, idx) => (
+                                            <div key={`loc-${idx}`} className="border-l-2 border-brand-blue/20 pl-4">
+                                                <strong className="text-slate-800 block text-sm mb-1">{loc.title}</strong>
+                                                {loc.lines.map((line, i) => <p key={i} className="text-sm leading-relaxed text-slate-600">{line}</p>)}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </ContactInfoItem>
-                                <ContactInfoItem icon={<Mail size={24} />} title="Email Us">
-                                    <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-brand-blue transition">{COMPANY_INFO.email}</a>
-                                </ContactInfoItem>
+
                                 <ContactInfoItem icon={<Phone size={24} />} title="Call Us">
-                                    <a href={`tel:${COMPANY_INFO.phone}`} className="hover:text-brand-blue transition">{COMPANY_INFO.phone}</a>
+                                    <div className="space-y-3 mt-3">
+                                        {COMPANY_INFO.phones.map((phone, idx) => (
+                                            <div key={`phone-${idx}`} className="border-l-2 border-brand-blue/20 pl-4">
+                                                <span className="text-slate-800 font-medium text-sm block mb-0.5">{phone.label}</span>
+                                                <a href={`tel:${phone.number}`} className="hover:text-brand-blue transition text-sm text-slate-600">{phone.number}</a>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </ContactInfoItem>
+
+                                <ContactInfoItem icon={<Mail size={24} />} title="Email Us">
+                                    <div className="mt-2">
+                                        <a href={`mailto:${COMPANY_INFO.email}`} className="hover:text-brand-blue transition text-sm text-slate-600">{COMPANY_INFO.email}</a>
+                                    </div>
                                 </ContactInfoItem>
                             </div>
                         </motion.div>
