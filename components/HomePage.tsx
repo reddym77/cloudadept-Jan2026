@@ -375,7 +375,7 @@ const HomePage: React.FC = () => {
                                     <div className="space-y-3">
                                         {COMPANY_INFO.phones.map((phone, index) => (
                                             <div key={index} className="border-l-2 border-brand-blue/20 pl-4">
-                                                <h4 className="text-sm font-medium text-slate-800">{phone.label}</h4>
+                                                <h4 className="text-sm font-bold text-slate-800">{phone.label}</h4>
                                                 <p className="mt-0.5 text-sm text-slate-600"><a href={`tel:${phone.number}`} className="hover:text-brand-blue transition">{phone.number}</a></p>
                                             </div>
                                         ))}

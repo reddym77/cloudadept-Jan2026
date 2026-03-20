@@ -143,7 +143,7 @@ const ContactPage: React.FC = () => {
                                     <div className="space-y-3 mt-3">
                                         {COMPANY_INFO.phones.map((phone, idx) => (
                                             <div key={`phone-${idx}`} className="border-l-2 border-brand-blue/20 pl-4">
-                                                <span className="text-slate-800 font-medium text-sm block mb-0.5">{phone.label}</span>
+                                                <span className="text-slate-800 font-bold text-sm block mb-0.5">{phone.label}</span>
                                                 <a href={`tel:${phone.number}`} className="hover:text-brand-blue transition text-sm text-slate-600">{phone.number}</a>
                                             </div>
                                         ))}
